@@ -1,16 +1,25 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3.0 + Vite" />
+  <app-button @click="onClick">点我</app-button>
 </template>
 
 <script lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import { defineComponent } from 'vue'
+import AppButton from '/@/components/Button/index.vue'
 
-export default {
+export default defineComponent({
   name: 'App',
   components: {
-    HelloWorld,
+    AppButton,
   },
-}
+  setup() {
+    function onClick(e) {
+      console.log(e)
+    }
+    return {
+      onClick,
+    }
+  },
+})
 </script>
-<style lang="scss"></style>
+
+<style lang="scss" scoped></style>

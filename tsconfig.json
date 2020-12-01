@@ -16,10 +16,14 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
-      "@": ["src"]
-    }
+      "/@/*": ["src/*"]
+    },
+    "isolatedModules": true
   },
   "exclude": [
     "node_modules"
+  ],
+  "include": [
+    "typings/*"
   ]
 }
