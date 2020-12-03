@@ -1,22 +1,50 @@
 <template>
-  <app-button @click="onClick">点我</app-button>
+  <app-form :model="form" :rules="rules" ref="fromRef">
+    <app-form-item prop="name">
+      <app-input v-model="form.name"></app-input>
+    </app-form-item>
+    <app-button @click="onClick">点我</app-button>
+  </app-form>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref, reactive } from 'vue'
+import type { RuleItem } from 'async-validator'
+
 import AppButton from '/@/components/Button/index.vue'
+import AppInput from '/@/components/Input/index.vue'
+import AppForm from '/@/components/Form/index.vue'
+import AppFormItem from '/@/components/Form/item.vue'
 
 export default defineComponent({
   name: 'App',
   components: {
     AppButton,
+    AppInput,
+    AppForm,
+    AppFormItem,
   },
   setup() {
-    function onClick(e) {
-      console.log(e)
+    const value = ref('123')
+    const form = reactive({
+      name: '',
+    })
+    const rules: Record<string, RuleItem[]> = {
+      name: [{ required: true }],
+    }
+    const fromRef = ref(null)
+
+    function onClick() {
+      fromRef.value.validate((valid) => {
+        console.log(valid)
+      })
     }
     return {
+      form,
+      rules,
+      fromRef,
       onClick,
+      value,
     }
   },
 })

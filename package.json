@@ -6,6 +6,8 @@
     "build": "vite build"
   },
   "dependencies": {
+    "async-validator": "^3.5.1",
+    "mitt": "^2.1.0",
     "typescript": "^4.1.2",
     "vue": "^3.0.2"
   },

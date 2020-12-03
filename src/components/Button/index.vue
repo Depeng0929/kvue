@@ -46,7 +46,8 @@ export default defineComponent({
       return props.disabled || props.loading
     })
 
-    function handleClick(e) {
+    function handleClick(e: Event) {
+      e.preventDefault()
       emit('click', e)
     }
     return {
