@@ -15,15 +15,18 @@ export default defineComponent({
     const current = ref(props.modelValue)
     const formItem = inject(formItemKey, {} as formItemContext)
 
-    watch(props.modelValue, (val) => {
-      current.value = val
-    })
+    watch(
+      () => props.modelValue,
+      (val) => {
+        current.value = val
+      },
+    )
 
     function onInput(e) {
       const value = e.target.value
       current.value = value
       emit('update:modelValue', value)
-      formItem.formItemMitt.emit('app.input.input', value)
+      formItem.formItemMitt?.emit('app.input.input', value)
     }
 
     function onBlur() {
