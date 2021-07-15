@@ -1,15 +1,15 @@
-import { ObserveOptions, ObserveCallback } from './types'
+import { VisibleOptions, VisibleCallback } from './types'
 import { throttle } from './util'
 
 class ObserveVisibility {
   private el: HTMLElement
   private observer: IntersectionObserver | null = null
-  private options: ObserveOptions | null = null
-  private callback: ObserveCallback = () => { }
+  private options: VisibleOptions | null = null
+  private callback: VisibleCallback = () => { }
   private froze = false
   private oldResult: boolean | undefined = undefined
 
-  constructor(el: HTMLElement, options: ObserveOptions) {
+  constructor(el: HTMLElement, options: VisibleOptions) {
     this.el = el
     this.createObserver(options)
   }
@@ -19,7 +19,7 @@ class ObserveVisibility {
     return typeof threshold === 'number' ? threshold : 0
   }
 
-  public createObserver(options: ObserveOptions) {
+  public createObserver(options: VisibleOptions) {
     if (this.observer)
       this.destoryObserver()
 

@@ -6,7 +6,7 @@ type Compute<A extends any> =
 type Merge<O1 extends object, O2 extends object> =
     Compute<O1 & Omit<O2, keyof O1>>
 
-export interface ObserveCallback {
+export interface VisibleCallback {
   (result: boolean, entry: IntersectionObserverEntry): any
 }
 
@@ -16,8 +16,8 @@ export type IntersectionOptions = Partial<{
   rootMargin?: string
 }>
 
-export type ObserveOptions = Merge<Partial<{
+export type VisibleOptions = Merge<Partial<{
   intersection: IntersectionObserverInit
   throttle: number
   once: boolean
-}>, { callback: ObserveCallback }>
+}>, { callback: VisibleCallback }>
