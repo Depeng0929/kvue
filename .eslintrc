@@ -5,9 +5,12 @@
     "cypress/globals": true
   },
   "globals": {
-    "__DEV__": true
+    "__DEV__": true,
+    "cy": true
   },
-  "extends": "@depeng0929/eslint-config",
+  "extends": [
+    "@depeng9527/eslint-config"
+  ],
   "plugins": ["jest", "cypress"],
   "rules": {
     "vue/no-lone-template": "off"

@@ -19,10 +19,6 @@
     ".": {
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
-    },
-    "./utils": {
-      "import": "./dist/utils.mjs",
-      "require": "./dist/utils.js"
     }
   },
   "main": "dist/index.js",
@@ -33,6 +29,8 @@
     "build": "rimraf dist && tsup src/index.ts --format cjs,esm --dts",
     "dev": "npm run build --watch"
   },
-  "bugs": "https://github.com/Depeng0929/kvue/issues"
+  "bugs": "https://github.com/Depeng0929/kvue/issues",
+  "dependencies": {
+    "vue": "^3.1.4"
+  }
 }
-

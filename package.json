@@ -8,7 +8,7 @@
     "ci:publish": "zx scripts/publish.mjs",
     "cy": "cypress open",
     "build": "pnpm -r --filter ./packages run build",
-    "dev": "pnpm -C packages/visible run dev"
+    "dev": "pnpm -C packages/virtual run dev"
   },
   "devDependencies": {
     "@depeng9527/eslint-config": "^1.0.1",
@@ -16,6 +16,7 @@
     "@types/node": "^16.3.2",
     "@typescript-eslint/eslint-plugin": "^4.28.3",
     "bumpp": "^6.0.6",
+    "cypress": "^7.7.0",
     "eslint": "^7.30.0",
     "eslint-plugin-cypress": "^2.11.3",
     "eslint-plugin-jest": "^24.3.6",
