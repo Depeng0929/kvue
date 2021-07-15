@@ -13,6 +13,7 @@ importers:
       eslint: ^7.30.0
       eslint-plugin-cypress: ^2.11.3
       eslint-plugin-jest: ^24.3.6
+      fs-extra: ^10.0.0
       jest: ^27.0.6
       lerna: ^4.0.0
       rimraf: ^3.0.2
@@ -30,6 +31,7 @@ importers:
       eslint: registry.nlark.com/eslint/7.30.0
       eslint-plugin-cypress: 2.11.3_eslint@7.30.0
       eslint-plugin-jest: registry.nlark.com/eslint-plugin-jest/24.3.6_c7802047a424f5f4702bce272d08e602
+      fs-extra: 10.0.0
       jest: registry.nlark.com/jest/27.0.6
       lerna: registry.nlark.com/lerna/4.0.0
       rimraf: 3.0.2
@@ -1782,6 +1784,15 @@ packages:
       mime-types: registry.nlark.com/mime-types/2.1.31
     dev: true
 
+  /fs-extra/10.0.0:
+    resolution: {integrity: sha512-C5owb14u9eJwizKGdchcDUQeFtlSHHthBk8pbX9Vc1PFZrLombudjDnNns88aYslCyF6IY5SUw3Roz6xShcEIQ==}
+    engines: {node: '>=12'}
+    dependencies:
+      graceful-fs: 4.2.6
+      jsonfile: 6.1.0
+      universalify: 2.0.0
+    dev: true
+
   /fs-extra/9.1.0:
     resolution: {integrity: sha512-hcg3ZmepS30/7BSFqRvoo3DOMQu7IjqxO5nCDt+zM9XWjb33Wg7ziNT+Qvqbuc3+gWpzO02JubVyk2G4Zvo1OQ==}
     engines: {node: '>=10'}
@@ -1883,7 +1894,7 @@ packages:
     dev: true
 
   /graceful-fs/4.2.6:
-    resolution: {integrity: sha1-/wQLKwhTsjw9MQJ1I3BvGIXXa+4=, tarball: graceful-fs/download/graceful-fs-4.2.6.tgz}
+    resolution: {integrity: sha512-nTnJ528pbqxYanhpDYsi4Rd8MAeaBA67+RZ10CM1m3bTAVFEDcd5AuA4a6W5YkGZ1iNXHzZz8T6TBKLeBuNriQ==}
     dev: true
 
   /har-schema/2.0.0:
