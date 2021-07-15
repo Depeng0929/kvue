@@ -12,6 +12,7 @@
     "resolveJsonModule": true,
     "strictNullChecks": true,
     "types": [
+      "vue",
       "node",
       "jest",
     ],

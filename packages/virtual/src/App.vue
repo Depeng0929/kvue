@@ -1,16 +1,30 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
+  <div class="demo">
+    <VirtualList :list="dataSource">
+      <template #default="{item}">
+        <p>{{ item.name }}</p>
+      </template>
+    </VirtualList>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import HelloWorld from './components/HelloWorld.vue'
+import { defineComponent, markRaw } from 'vue'
+import VirtualList from './components/VirtualList.vue'
+
+import { mock } from './utils/index'
 
 export default defineComponent({
   name: 'App',
   components: {
-    HelloWorld,
+    VirtualList,
+  },
+  setup() {
+    const dataSource = markRaw(mock(1000))
+
+    return {
+      dataSource,
+    }
   },
 })
 </script>
@@ -23,5 +37,10 @@ export default defineComponent({
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+.demo {
+  width: 800px;
+  height: 600px;
+  border: 1px solid red;
 }
 </style>
