@@ -1,0 +1,31 @@
+{
+  "name": "@kvue/virtual",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "description": "Smooth scrolling for any amount of data",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Depeng0929/kvue"
+  },
+  "author": "Depeng0929 <15365182986@163.com>",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.0.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^1.2.5",
+    "@vue/compiler-sfc": "^3.0.5",
+    "typescript": "^4.3.2",
+    "vite": "^2.4.2",
+    "vue-tsc": "^0.0.24"
+  },
+  "bugs": "https://github.com/Depeng0929/kvue/issues"
+}

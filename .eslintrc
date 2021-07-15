@@ -1,0 +1,15 @@
+{
+  "env": {
+    "node": true,
+    "jest": true,
+    "cypress/globals": true
+  },
+  "globals": {
+    "__DEV__": true
+  },
+  "extends": "@depeng0929/eslint-config",
+  "plugins": ["jest", "cypress"],
+  "rules": {
+    "vue/no-lone-template": "off"
+  }
+}
