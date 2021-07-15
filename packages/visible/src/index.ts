@@ -1,8 +1,8 @@
-import ObserveVisibility from "./visibleObserve";
+import type { DirectiveBinding, App } from 'vue'
+import ObserveVisibility from './visibleObserve'
 import { deepEqual } from './util'
-import type { DirectiveBinding, App, } from 'vue'
 
-interface IHTMLElement extends HTMLElement  {
+interface IHTMLElement extends HTMLElement {
   _vue_visibilityState?: ObserveVisibility
 }
 
@@ -21,11 +21,10 @@ function updated(el: IHTMLElement, binding: DirectiveBinding) {
   }
 
   const state = el._vue_visibilityState
-  if (state) {
+  if (state)
     state.createObserver(value)
-  } else {
+  else
     mounted(el, binding)
-  }
 }
 
 function unmounted(el: IHTMLElement) {
@@ -41,10 +40,9 @@ const VObserve = {
     app.directive('observe', {
       mounted,
       updated,
-      unmounted
+      unmounted,
     })
-  }
+  },
 }
 
 export default VObserve
-

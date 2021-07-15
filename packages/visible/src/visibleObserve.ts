@@ -1,17 +1,16 @@
-import { ObserveOptions, ObserveCallback } from "./types";
+import { ObserveOptions, ObserveCallback } from './types'
 import { throttle } from './util'
 
 class ObserveVisibility {
-  private el: HTMLElement;
-  private observer: IntersectionObserver | null = null;
-  private options: ObserveOptions | null = null;
-  private callback: ObserveCallback = () => { };
-  private froze: boolean = false
+  private el: HTMLElement
+  private observer: IntersectionObserver | null = null
+  private options: ObserveOptions | null = null
+  private callback: ObserveCallback = () => { }
+  private froze = false
   private oldResult: boolean | undefined = undefined
 
-
   constructor(el: HTMLElement, options: ObserveOptions) {
-    this.el = el;
+    this.el = el
     this.createObserver(options)
   }
 
@@ -21,9 +20,8 @@ class ObserveVisibility {
   }
 
   public createObserver(options: ObserveOptions) {
-    if (this.observer) {
+    if (this.observer)
       this.destoryObserver()
-    }
 
     if (this.froze) return
 
@@ -39,17 +37,15 @@ class ObserveVisibility {
     }
 
     // Throttle
-    if (this.callback && this.options.throttle) {
-      this.callback = throttle( this.callback, this.options.throttle)
-    }
+    if (this.callback && this.options.throttle)
+      this.callback = throttle(this.callback, this.options.throttle)
 
     this.observer = new IntersectionObserver((entries) => {
       let entry = entries[0]
       if (entries.length > 1) {
         const firstEntry = entries.find(e => e.isIntersecting)
-        if (firstEntry) {
+        if (firstEntry)
           entry = firstEntry
-        }
       }
 
       if (this.callback) {
@@ -59,16 +55,14 @@ class ObserveVisibility {
         this.oldResult = result
         this.callback(result, entry)
       }
-
     }, this.options?.intersection)
 
     this.observer.observe(this.el)
   }
 
   public destoryObserver() {
-    if (!this.observer) {
+    if (!this.observer)
       return
-    }
 
     this.observer.disconnect()
     this.observer = null
