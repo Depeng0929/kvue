@@ -35,8 +35,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-     - name: Setup
-        run: npm i -g pnpm
+      - name: Setup
+          run: npm i -g pnpm
 
       - name: Install
         run: npm install
@@ -61,8 +61,8 @@ jobs:
         with:
           node-version: 14.x
 
-     - name: Setup
-        run: npm i -g pnpm
+      - name: Setup
+          run: npm i -g pnpm
 
       - name: Install
         run: npm install
