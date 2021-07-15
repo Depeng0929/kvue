@@ -36,69 +36,15 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Setup
-        run: npm i -g pnpm
+        run: npm i -g pnpm @antfu/ni
 
       - name: Install
-        run: pnpm install
+        run: nci
         env:
           CYPRESS_INSTALL_BINARY: 0
 
       - name: Build
-        run: pnpm build
+        run: nr build
 
       - name: Test
-        run: pnpm test
-
-  cypress:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14.x
-
-      - name: Setup
-        run: npm i -g pnpm
-
-      - name: Install
-        run: pnpm install
-
-      - name: Build
-        run: pnpm build
-
-      - name: Hack Cypress
-        run: cp pnpm-lock.yaml package-lock.json
-
-      - name: Cypress
-        uses: cypress-io/github-action@v2
-        with:
-          install-command: echo
-          build: pnpm build
-          start: pnpm cy:fixture
-
-  lint:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14.x
-
-      - name: Setup
-        run: npm i -g pnpm
-
-      - name: Install
-        run: pnpm install
-        env:
-          CYPRESS_INSTALL_BINARY: 0
-
-      - name: Lint
-        run: pnpm lint --if-present
+        run: nr test
