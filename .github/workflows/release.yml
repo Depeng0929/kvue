@@ -26,4 +26,3 @@ jobs:
       - run: pnpm ci:publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
-      - run: npx conventional-github-releaser -p angular
