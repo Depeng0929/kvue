@@ -16,9 +16,14 @@ jobs:
         with:
           node-version: '14'
           registry-url: https://registry.npmjs.org/
-      - run: npm i -g pnpm @antfu/ni
-      - run: npm install
-      - run: nr ci:publish
+
+      - name: Setup
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.9.0
+
+      - run: pnpm install
+      - run: pnpm ci:publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
       - run: npx conventional-github-releaser -p angular
