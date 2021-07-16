@@ -8,7 +8,8 @@ export default defineConfig({
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
-      name: 'MyLib',
+      name: 'virtual',
+      fileName: 'index',
     },
   },
 })
