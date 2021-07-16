@@ -11,29 +11,31 @@
 <script lang="ts">
 import { PropType, defineComponent, toRefs, computed, ref, onMounted } from 'vue'
 
-export default defineComponent({
-  name: 'VirtualList',
-  props: {
-    list: {
-      type: Array as PropType<unknown[]>,
-      default() {
-        return []
-      },
-    },
-    itemSize: {
-      type: Number,
-      default: () => 40,
-    },
-    poolBuffer: {
-      type: Number,
-      default: () => 50,
+const ListProps = {
+  list: {
+    type: Array as PropType<unknown[]>,
+    default() {
+      return []
     },
   },
+  itemSize: {
+    type: Number,
+    default: () => 40,
+  },
+  poolBuffer: {
+    type: Number,
+    default: () => 50,
+  },
+}
+
+export default defineComponent({
+  name: 'VirtualList',
+  props: ListProps,
   setup(props) {
     const { list, itemSize, poolBuffer } = toRefs(props)
 
     const root = ref<HTMLElement | null>(null)
-    const visibleList = ref<unknown[]>([])
+    const visibleList = ref<any[]>([])
     const paddingTop = ref<number>(0)
 
     const screenHeight = computed(() => {
@@ -50,12 +52,11 @@ export default defineComponent({
       const start = Math.floor(rootScrollTop / itemSize.value) - Math.floor(poolBuffer.value / 2)
       const startIndex = Math.max(start, 0)
 
-      const end = startIndex + Math.floor(root.value!.clientHeight / itemSize.value) +
-          poolBuffer.value
+      const end = startIndex + Math.floor(root.value!.clientHeight / itemSize.value)
+          + poolBuffer.value
 
       const endIndex = Math.min(end, list.value.length)
 
-      console.log(startIndex, endIndex)
       visibleList.value = list.value.slice(startIndex, endIndex)
       paddingTop.value = startIndex * itemSize.value
     }

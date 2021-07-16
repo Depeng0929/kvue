@@ -13,6 +13,7 @@ import { defineComponent, markRaw } from 'vue'
 import VirtualList from './components/VirtualList.vue'
 
 import { mock } from './utils/index'
+import { ListItem } from './types/index.d'
 
 export default defineComponent({
   name: 'App',
@@ -20,7 +21,7 @@ export default defineComponent({
     VirtualList,
   },
   setup() {
-    const dataSource = markRaw(mock(1000))
+    const dataSource = markRaw<ListItem[]>(mock(1000))
 
     return {
       dataSource,
