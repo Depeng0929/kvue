@@ -1,6 +1,6 @@
 <template>
   <div ref="root" class="container" @scroll.passive="onScroll">
-    <div class="view" :style="{height: `${screenHeight}px`}">
+    <div class="view" :style="{height: `${screenHeight}px`, paddingTop: `${paddingTop}px`}">
       <div v-for="(item, index) in visibleList" :key="index" class="item">
         <slot :item="item"></slot>
       </div>
@@ -34,6 +34,7 @@ export default defineComponent({
 
     const root = ref<HTMLElement | null>(null)
     const visibleList = ref<unknown[]>([])
+    const paddingTop = ref<number>(0)
 
     const screenHeight = computed(() => {
       return list.value.length * itemSize.value
@@ -49,16 +50,27 @@ export default defineComponent({
       const start = Math.floor(rootScrollTop / itemSize.value) - Math.floor(poolBuffer.value / 2)
       const startIndex = Math.max(start, 0)
 
-      const end = startIndex + Math.floor(root.value!.clientHeight / itemSize.value) - Math.floor(poolBuffer.value / 2)
+      const end = startIndex + Math.floor(root.value!.clientHeight / itemSize.value) +
+          poolBuffer.value
 
       const endIndex = Math.min(end, list.value.length)
 
+      console.log(startIndex, endIndex)
       visibleList.value = list.value.slice(startIndex, endIndex)
+      paddingTop.value = startIndex * itemSize.value
     }
+
+    let forzen = false
     function onScroll() {
-      console.log(1)
+      if (forzen) return
+      forzen = true
+      requestAnimationFrame(() => {
+        forzen = false
+        calculateRange()
+      })
     }
     return {
+      paddingTop,
       visibleList,
       screenHeight,
       root,
@@ -75,6 +87,7 @@ export default defineComponent({
   overflow: auto;
   .view {
     width: 100%;
+    box-sizing: border-box;
   }
 }
 </style>
