@@ -2,7 +2,7 @@ import { execSync } from 'child_process'
 import fs from 'fs-extra'
 import { $ } from 'zx'
 
-execSync('npx bumpp package.json packages/*/package.json demo/*/package.json', { stdio: 'inherit' })
+execSync('npx bumpp package.json packages/*/package.json demo/package.json', { stdio: 'inherit' })
 
 const { version } = await fs.readJSON('package.json')
 
