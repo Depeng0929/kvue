@@ -13,6 +13,7 @@
   ],
   "plugins": ["jest", "cypress"],
   "rules": {
-    "vue/no-lone-template": "off"
+    "vue/no-lone-template": "off",
+    "no-console": "off"
   }
 }

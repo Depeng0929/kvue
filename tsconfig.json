@@ -17,13 +17,14 @@
       "jest",
     ],
     "paths": {
-      "@kvue/*": ["./packages/*"],
+      "@kvue/*": ["packages/*"],
     }
   },
   "include": [
     "./packages/**/*.ts",
     "./packages/**/*.vue"
-, "shims-vue.d.ts"  ],
+,   "shims-vue.d.ts"
+  ],
   "exclude": ["**/dist/**", "node_modules"]
 }
 

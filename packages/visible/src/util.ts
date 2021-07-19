@@ -23,11 +23,13 @@ export const isObject = (val: unknown): val is Record<any, any> => val !== null 
 
 export function deepEqual(val: unknown, val2: unknown) {
   if (val === val2) return true
+
   if (isObject(val) && isObject(val2) && Object.keys(val).length === Object.keys(val2).length) {
-    Object.keys(val).forEach((k) => {
+    for (const k of Object.keys(val)) {
       if (!deepEqual(val[k], val2[k]))
         return false
-    })
+    }
+
     return true
   }
   return false

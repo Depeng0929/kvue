@@ -13,7 +13,8 @@ function mounted(el: IHTMLElement, binding: DirectiveBinding) {
 
 function updated(el: IHTMLElement, binding: DirectiveBinding) {
   const { value, oldValue } = binding
-  if (deepEqual(value, oldValue)) return
+  if (deepEqual(value, oldValue))
+    return
 
   if (!value) {
     unmounted(el)

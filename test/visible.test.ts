@@ -25,7 +25,7 @@ describe('visible util', () => {
     }
     const c = {
       name: 'Tom',
-      age: 12,
+      age: 13,
     }
 
     expect(deepEqual(a, b)).toBeTruthy()
