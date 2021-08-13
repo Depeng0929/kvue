@@ -27,7 +27,7 @@
   "scripts": {
     "prepublishOnly": "npm run build",
     "build": "rimraf dist && tsup src/index.ts --format cjs,esm --dts",
-    "dev": "npm run build --watch"
+    "dev": "tsup src/index.ts --watch --format cjs,esm --dts "
   },
   "bugs": "https://github.com/Depeng0929/kvue/issues",
   "dependencies": {

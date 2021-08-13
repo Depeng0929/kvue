@@ -1,12 +1,12 @@
 import { App } from 'vue'
-import ObserveDirectives from './directives'
+import ObserveVisibility from './directives'
 
 export {
-  ObserveDirectives,
+  ObserveVisibility,
 }
 
 export default {
   install: (app: App) => {
-    app.directive('observe', ObserveDirectives)
+    app.directive('observe-visibility', ObserveVisibility)
   },
 }
