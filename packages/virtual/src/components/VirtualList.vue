@@ -1,94 +1,238 @@
 <template>
-  <div ref="root" class="container" @scroll.passive="onScroll">
-    <div class="view" :style="{height: `${screenHeight}px`, paddingTop: `${paddingTop}px`}">
-      <div v-for="(item, index) in visibleList" :key="index" class="item">
-        <slot :item="item"></slot>
+  <div
+    v-observe-visibility="{callback:onVisibilityChange}"
+    class="virtual-list"
+    @scroll.passive="onScroll"
+  >
+    <div class="virtual-wrap" :style="{height: totalSize + 'px'}">
+      <div
+        v-for="(item) in pool"
+        :key="item.id"
+        class="virtual-item"
+        :style="{
+          transform:`translateY(${item.acc - item.item.h}px)`,
+        }"
+      >
+        <slot :item="item.item"></slot>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { PropType, defineComponent, toRefs, computed, ref, onMounted } from 'vue'
-
-const ListProps = {
-  list: {
-    type: Array as PropType<unknown[]>,
-    default() {
-      return []
-    },
-  },
-  itemSize: {
-    type: Number,
-    default: () => 40,
-  },
-  poolBuffer: {
-    type: Number,
-    default: () => 50,
-  },
-}
-
+import {
+  ref,
+  PropType,
+  toRefs,
+  nextTick,
+  onMounted,
+  getCurrentInstance,
+  onBeforeUnmount,
+  computed,
+  watch,
+  defineComponent,
+} from 'vue'
+import { ObserveVisibility } from '@depeng9527/visible'
+import ScrollParent from 'scrollparent'
+import { ListItem, Direction } from '../types'
 export default defineComponent({
   name: 'VirtualList',
-  props: ListProps,
+  directives: {
+    ObserveVisibility,
+  },
+  props: {
+    items: {
+      type: Array as PropType<ListItem[]>,
+      required: true,
+    },
+    buffer: {
+      type: Number,
+      default: 200,
+    },
+    direction: {
+      type: String as PropType<Direction>,
+      default: 'vertical',
+    },
+  },
   setup(props) {
-    const { list, itemSize, poolBuffer } = toRefs(props)
+    let min = 1000
+    let lastPosition = 0
 
-    const root = ref<HTMLElement | null>(null)
-    const visibleList = ref<any[]>([])
-    const paddingTop = ref<number>(0)
+    const { items, buffer } = toRefs(props)
 
-    const screenHeight = computed(() => {
-      return list.value.length * itemSize.value
+    const pool = ref([])
+    const totalSize = ref(0)
+    const instance = getCurrentInstance()
+
+    const sizes = computed(() => {
+      const result = {
+        '-1': { acc: 0, size: 0 },
+      }
+      let acc = 0
+
+      let current
+      for (let i = 0, l = items.value.length; i < l; i++) {
+        current = items.value[i].h || 54
+        if (current < min)
+          min = current
+
+        acc += current
+        result[i] = { acc, size: current }
+      }
+
+      return result
     })
+
+    watch([items, sizes], () => {
+      updateVisibleItems({ checkPosition: false })
+    }, { deep: true })
 
     onMounted(() => {
-      calculateRange()
+      addListeners()
+      nextTick(() => {
+        updateVisibleItems({ checkPosition: false })
+      })
+    })
+    onBeforeUnmount(() => {
+      removeListeners()
     })
 
-    function calculateRange() {
-      const rootScrollTop = root.value!.scrollTop
+    function updateVisibleItems({ checkPosition = false }) {
+      let startIndex, endIndex
+      const count = items.value.length
+      totalSize.value = sizes.value[count - 1].acc
 
-      const start = Math.floor(rootScrollTop / itemSize.value) - Math.floor(poolBuffer.value / 2)
-      const startIndex = Math.max(start, 0)
+      if (!count) {
+        startIndex = endIndex = 0
+      }
+      else {
+        const scroll = getScroll()
+        // user hasn't scrolled enough
+        if (checkPosition) {
+          const diff = Math.abs(scroll.start - lastPosition)
+          if (diff < min) {
+            return {
+              continuous: true,
+            }
+          }
+        }
 
-      const end = startIndex + Math.floor(root.value!.clientHeight / itemSize.value)
-          + poolBuffer.value
+        lastPosition = scroll.start
 
-      const endIndex = Math.min(end, list.value.length)
+        scroll.start -= buffer.value
+        scroll.end += buffer.value
+        scroll.start = Math.max(scroll.start, 0)
+        scroll.end = Math.min(scroll.end, totalSize.value)
 
-      visibleList.value = list.value.slice(startIndex, endIndex)
-      paddingTop.value = startIndex * itemSize.value
+        // search startIndex
+        startIndex = searchClose(scroll.start)
+        startIndex = startIndex === 0 ? 0 : startIndex
+        // search endIndex
+        endIndex = searchClose(scroll.end, false)
+        endIndex = endIndex === 0 ? items.value.length - 1 : endIndex
+
+        const newArr = []
+        for (let i = startIndex; i <= endIndex; i++)
+          newArr.push({ item: items.value[i], ...sizes.value[i] })
+
+        pool.value = newArr
+        return {
+          continuous: false,
+        }
+      }
+
+      function searchClose(val, prevFirst = true) {
+        let s = 0
+        let e = count - 1
+        let result = 0
+
+        while (s < e - 1) {
+          const midIndex = ~~((s + e) / 2)
+          const mid = sizes.value[midIndex].acc
+          if (mid > val)
+            e = midIndex
+          else if (mid < val)
+            s = midIndex
+          else
+            return result = midIndex
+        }
+        return prevFirst ? s : e
+      }
     }
 
-    let forzen = false
+    function getScroll() {
+      const el = instance?.proxy?.$el
+      return el
+        ? { start: el.scrollTop, end: el.scrollTop + el.clientHeight }
+        : { start: 0, end: 0 }
+    }
+
     function onScroll() {
-      if (forzen) return
-      forzen = true
       requestAnimationFrame(() => {
-        forzen = false
-        calculateRange()
+        updateVisibleItems({ checkPosition: true })
       })
     }
+
+    function onResize() {
+      updateVisibleItems({ checkPosition: false })
+    }
+
+    function onVisibilityChange(isVisible) {
+      if (isVisible) {
+        requestAnimationFrame(() => {
+          updateVisibleItems({ checkPosition: false })
+        })
+      }
+    }
+
+    let target
+    function getScrollParent() {
+      target = ScrollParent(instance?.proxy?.$el) as Element
+      if (
+        window.document
+          && (
+            target === window.document.documentElement
+              || target === window.document.body
+          )
+      )
+        target = window
+
+      return target
+    }
+    // TODO: resize Observe
+    function addListeners() {
+      target = getScrollParent()
+      target.addEventListener('scroll', onScroll, { passive: true })
+    }
+    function removeListeners() {
+      target.removeEventListener('scroll', onScroll, { passive: true })
+    }
+
     return {
-      paddingTop,
-      visibleList,
-      screenHeight,
-      root,
+      pool,
+      onVisibilityChange,
+      sizes,
+      min,
+      totalSize,
       onScroll,
     }
   },
-})
+},
+)
 
 </script>
-<style lang='scss' scoped>
-.container {
-  width: 100%;
-  height:100%;
+
+<style lang="scss">
+.virtual-list {
+  height: 100%;
   overflow: auto;
-  .view {
-    width: 100%;
-    box-sizing: border-box;
-  }
+}
+.virtual-wrap {
+  overflow: hidden;
+  position: relative;
+}
+.virtual-item {
+  position: absolute;
+  top: 0;
 }
 </style>

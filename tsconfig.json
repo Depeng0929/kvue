@@ -17,7 +17,7 @@
       "jest",
     ],
     "paths": {
-      "@kvue/*": ["packages/*"],
+      "@depeng9527/visible": ["packages/visible/src/index.ts"],
     }
   },
   "include": [

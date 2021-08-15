@@ -6,7 +6,7 @@
     <div class="test-wrap">
       <div
         v-show="show"
-        v-observe="{
+        v-observe-visibility="{
           callback: visibleChange,
           once,
           throttle: 500

@@ -18,6 +18,8 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "@depeng9527/visible": "workspace:*",
+    "scrollparent": "^2.0.1",
     "vue": "^3.0.5"
   },
   "devDependencies": {

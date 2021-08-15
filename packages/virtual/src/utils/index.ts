@@ -1,5 +1,5 @@
 import faker from 'faker'
-import { ListItem } from '@kvue/virtual/src/types'
+import { ListItem } from '../types'
 
 export function uuid() {
   let d = Date.now()
@@ -17,13 +17,12 @@ export function uuid() {
 }
 
 export function mock(length = 1000): ListItem[] {
+  let uid = 0
   return Array.from({ length }, () => {
     return {
-      id: uuid(),
+      id: `${uid++}`,
       name: faker.name.findName(),
-      email: faker.internet.email(),
-      address: faker.address.country(),
-      img: faker.image.imageUrl(),
+      h: faker.datatype.number({ min: 20, max: 40 }),
     }
   })
 }

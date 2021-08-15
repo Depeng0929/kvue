@@ -10,6 +10,7 @@
     "cy": "cypress open",
     "build": "pnpm -r --filter ./packages run build",
     "dev": "pnpm -C demo run dev",
+    "dev:virtual": "pnpm --filter {packages/virtual}...  --parallel run dev",
     "release": "zx scripts/release.mjs",
     "ci:publish": "zx scripts/publish.mjs"
   },
