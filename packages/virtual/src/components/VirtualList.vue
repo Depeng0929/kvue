@@ -6,14 +6,14 @@
   >
     <div class="virtual-wrap" :style="{height: totalSize + 'px'}">
       <div
-        v-for="(item) in pool"
-        :key="item.id"
+        v-for="listItem in pool"
+        :key="listItem.item.id"
         class="virtual-item"
         :style="{
-          transform:`translateY(${item.acc - item.item.h}px)`,
+          transform:`translateY(${listItem.acc - listItem.item.h}px)`,
         }"
       >
-        <slot :item="item.item"></slot>
+        <slot :item="listItem.item"></slot>
       </div>
     </div>
   </div>
@@ -32,40 +32,46 @@ import {
   watch,
   defineComponent,
 } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import { ObserveVisibility } from '@depeng9527/visible'
 import ScrollParent from 'scrollparent'
-import { ListItem, Direction } from '../types'
+import { ListItemWithHeght, ListExtraInfo, ListItemExtraInfo } from '../types'
+import { ITEM_MIN_HEIGHT } from '../config'
+import { props as commProps } from './comm'
+
+interface ListPool extends ListItemExtraInfo {
+  item: ListItemWithHeght
+}
+
+let uid = -9999
 export default defineComponent({
   name: 'VirtualList',
+
   directives: {
     ObserveVisibility,
   },
+
   props: {
+    ...commProps,
+
     items: {
-      type: Array as PropType<ListItem[]>,
+      type: Array as PropType<ListItemWithHeght[]>,
       required: true,
     },
-    buffer: {
-      type: Number,
-      default: 200,
-    },
-    direction: {
-      type: String as PropType<Direction>,
-      default: 'vertical',
-    },
   },
+
   setup(props) {
-    let min = 1000
+    let min = ITEM_MIN_HEIGHT
     let lastPosition = 0
 
-    const { items, buffer } = toRefs(props)
-
-    const pool = ref([])
+    const pool = ref<ListPool[]>([])
     const totalSize = ref(0)
     const instance = getCurrentInstance()
 
+    const { items, buffer } = toRefs(props)
+
     const sizes = computed(() => {
-      const result = {
+      const result: ListExtraInfo = {
         '-1': { acc: 0, size: 0 },
       }
       let acc = 0
@@ -93,6 +99,7 @@ export default defineComponent({
         updateVisibleItems({ checkPosition: false })
       })
     })
+
     onBeforeUnmount(() => {
       removeListeners()
     })
@@ -125,26 +132,24 @@ export default defineComponent({
         scroll.end = Math.min(scroll.end, totalSize.value)
 
         // search startIndex
-        startIndex = searchClose(scroll.start)
+        startIndex = binarySearchClose(scroll.start)
         startIndex = startIndex === 0 ? 0 : startIndex
         // search endIndex
-        endIndex = searchClose(scroll.end, false)
+        endIndex = binarySearchClose(scroll.end, false)
         endIndex = endIndex === 0 ? items.value.length - 1 : endIndex
 
-        const newArr = []
-        for (let i = startIndex; i <= endIndex; i++)
-          newArr.push({ item: items.value[i], ...sizes.value[i] })
-
+        // reuse dom
+        const newArr = createPool(pool.value, startIndex, endIndex)
         pool.value = newArr
+
         return {
           continuous: false,
         }
       }
 
-      function searchClose(val, prevFirst = true) {
+      function binarySearchClose(val: number, prevFirst = true) {
         let s = 0
         let e = count - 1
-        let result = 0
 
         while (s < e - 1) {
           const midIndex = ~~((s + e) / 2)
@@ -154,30 +159,43 @@ export default defineComponent({
           else if (mid < val)
             s = midIndex
           else
-            return result = midIndex
+            return midIndex
         }
         return prevFirst ? s : e
+      }
+
+      function createPool(oldPool: ListPool[], start: number, end: number): ListPool[] {
+        const len = end - start + 1
+        const max = Math.max(oldPool.length, len)
+
+        return Array.from({ length: max }, (_, i) => {
+          if (i >= len - 1)
+            return { acc: -9999, size: 0, item: { id: `${uid--}`, h: 0 } }
+
+          return { item: items.value[start + i], ...sizes.value[start + i] }
+        })
       }
     }
 
     function getScroll() {
-      const el = instance?.proxy?.$el
+      const el = (instance!.proxy as ComponentPublicInstance).$el as HTMLElement
       return el
         ? { start: el.scrollTop, end: el.scrollTop + el.clientHeight }
         : { start: 0, end: 0 }
     }
 
+    let _scrollFlag = false
     function onScroll() {
-      requestAnimationFrame(() => {
-        updateVisibleItems({ checkPosition: true })
-      })
+      if (!_scrollFlag) {
+        _scrollFlag = true
+        requestAnimationFrame(() => {
+          _scrollFlag = false
+          updateVisibleItems({ checkPosition: true })
+        })
+      }
     }
 
-    function onResize() {
-      updateVisibleItems({ checkPosition: false })
-    }
-
-    function onVisibilityChange(isVisible) {
+    function onVisibilityChange(isVisible: boolean) {
       if (isVisible) {
         requestAnimationFrame(() => {
           updateVisibleItems({ checkPosition: false })
@@ -185,34 +203,32 @@ export default defineComponent({
       }
     }
 
-    let target
+    let _target: HTMLElement | Window
     function getScrollParent() {
-      target = ScrollParent(instance?.proxy?.$el) as Element
+      _target = ScrollParent(instance?.proxy?.$el)!
       if (
         window.document
           && (
-            target === window.document.documentElement
-              || target === window.document.body
+            _target === window.document.documentElement
+              || _target === window.document.body
           )
       )
-        target = window
+        _target = window
 
-      return target
+      return _target
     }
     // TODO: resize Observe
     function addListeners() {
-      target = getScrollParent()
-      target.addEventListener('scroll', onScroll, { passive: true })
+      _target = getScrollParent()
+      _target.addEventListener('scroll', onScroll, { passive: true })
     }
     function removeListeners() {
-      target.removeEventListener('scroll', onScroll, { passive: true })
+      _target.removeEventListener('scroll', onScroll)
     }
 
     return {
       pool,
       onVisibilityChange,
-      sizes,
-      min,
       totalSize,
       onScroll,
     }

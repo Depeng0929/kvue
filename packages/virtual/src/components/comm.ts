@@ -1,7 +1,18 @@
+import { PropType } from 'vue'
 import type { InjectionKey } from 'vue'
 
-export const props = {
+import { Direction } from '../types/index.d'
 
+export const props = {
+  buffer: {
+    type: Number,
+    default: 200,
+  },
+
+  direction: {
+    type: String as PropType<Direction>,
+    default: 'vertical',
+  },
 }
 
 export interface DynamicScrollContext {
@@ -9,6 +20,6 @@ export interface DynamicScrollContext {
     [p: number]: number
   }
   resizeObserver: ResizeObserver
-  updateItemSize: (i: number, v: any) => void
+  updateItemSize: (i: string, v: any) => void
 }
 export const dynamicScrollKey: InjectionKey<DynamicScrollContext> = 'dynamicScroll' as any

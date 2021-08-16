@@ -1,7 +1,6 @@
 <script lang="ts">
 import {
   inject,
-  ref,
   defineComponent,
   h,
   onMounted,
@@ -9,8 +8,9 @@ import {
   onBeforeUnmount,
   computed,
   PropType,
-  watch,
 } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
+import type { ListItem } from '../types'
 import { dynamicScrollKey, DynamicScrollContext } from './comm'
 
 export default defineComponent({
@@ -18,7 +18,7 @@ export default defineComponent({
 
   props: {
     item: {
-      type: Object as PropType<any>,
+      type: Object as PropType<ListItem>,
       required: true,
     },
   },
@@ -34,6 +34,7 @@ export default defineComponent({
     onMounted(() => {
       observeSize()
     })
+
     onBeforeUnmount(() => {
       unobserveSize()
     })
@@ -41,10 +42,10 @@ export default defineComponent({
     function observeSize() {
       if (!dynamicScrollInstance.resizeObserver) return
 
-      const el = instance?.proxy?.$el
+      const el = getElTarget()
 
       dynamicScrollInstance.resizeObserver.observe(el.parentNode as Element)
-      el.parentNode.addEventListener('resize', onResize)
+      el.parentNode!.addEventListener('resize', onResize)
     }
 
     function unobserveSize() {
@@ -53,8 +54,12 @@ export default defineComponent({
       el.parentNode.removeEventListener('resize', onResize)
     }
 
-    function onResize(event) {
-      const { height } = event.detail.contentRect
+    function getElTarget() {
+      return (instance!.proxy as ComponentPublicInstance).$el as Element
+    }
+
+    function onResize(event: Event) {
+      const { height } = (event as CustomEvent<{contentRect: DOMRect}>).detail.contentRect
       applySize(height)
     }
 

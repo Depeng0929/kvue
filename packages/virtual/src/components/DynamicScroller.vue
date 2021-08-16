@@ -7,9 +7,14 @@
 </template>
 
 <script lang="ts">
-import { PropType, ref, computed, reactive, provide, defineComponent, toRefs } from 'vue'
+import { PropType, computed, reactive, provide, defineComponent, toRefs } from 'vue'
+import { ListItem } from '../types'
 import VirtualList from './VirtualList.vue'
-import { dynamicScrollKey } from './comm'
+import { dynamicScrollKey, props as commonProps } from './comm'
+
+type ISize = {
+  [p: string]: number
+}
 
 export default defineComponent({
   name: 'DynamicScroller',
@@ -19,22 +24,23 @@ export default defineComponent({
   },
 
   props: {
-    // TODO: props同VirtualList优化
+    ...commonProps,
+
     items: {
-      type: Array as PropType<any[]>,
-      default() {
-        return []
-      },
+      type: Array as PropType<ListItem[]>,
+      required: true,
+
     },
   },
 
   setup(props) {
     const { items } = toRefs(props)
 
-    const sizes = reactive({})
-    const updateItemSize = (index: number, val: any) => {
+    const sizes = reactive<ISize>({})
+    const updateItemSize = (index: string, val: any) => {
       sizes[index] = val
     }
+
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         if (entry.target) {
@@ -67,7 +73,6 @@ export default defineComponent({
 
     return {
       itemsWithSize,
-      sizes,
     }
   },
 })

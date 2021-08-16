@@ -16,7 +16,7 @@ export function uuid() {
   })
 }
 
-export function mock(length = 1000): ListItem[] {
+export function mock(length = 1000) {
   let uid = 0
   return Array.from({ length }, () => {
     return {
