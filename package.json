@@ -1,13 +1,13 @@
 {
   "name": "kvue",
-  "version": "1.0.7",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
     "lint": "eslint '**/*.{js,ts,vue,json}'",
     "lint:fix": "npm run lint --fix",
     "test": "jest",
     "test:e2e": "concurrently -k \"pnpm dev\" \"cypress run\"",
-    "cy": "cypress open",
+    "cy": "cypress install && cypress open",
     "build": "pnpm -r --filter ./packages run build",
     "dev": "pnpm -C demo run dev",
     "dev:virtual": "pnpm --filter {packages/virtual}...  --parallel run dev",
