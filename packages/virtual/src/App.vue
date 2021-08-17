@@ -11,19 +11,19 @@
   <div class="demo">
     <VirtualList :items="dataSource">
       <template #default="{item}">
-        <p>{{ item.name }}</p>
+        <p>{{ item.id }}{{ item.name }}</p>
       </template>
     </VirtualList>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, markRaw, ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 import DynamicScroller from './components/DynamicScroller.vue'
 import DynamicScrollerItem from './components/DynamicScrollerItem.vue'
 import VirtualList from './components/VirtualList.vue'
 
-import { mock } from './utils/index'
+import { mock } from './utils'
 
 export default defineComponent({
   name: 'App',
@@ -37,8 +37,7 @@ export default defineComponent({
     const show = ref(true)
 
     setTimeout(() => {
-      const list = mock(1000)
-      dataSource.value = list
+      dataSource.value = mock(1000)
     }, 200)
 
     return {
@@ -50,14 +49,6 @@ export default defineComponent({
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 .demo {
   width: 800px;
   height: 600px;
