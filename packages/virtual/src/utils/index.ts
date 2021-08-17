@@ -1,5 +1,4 @@
 import faker from 'faker'
-import { ListItem } from '../types'
 
 export function uuid() {
   let d = Date.now()

@@ -33,7 +33,7 @@ export default defineComponent({
     VirtualList,
   },
   setup() {
-    const dataSource = ref([])
+    const dataSource = ref<any[]>([])
     const show = ref(true)
 
     setTimeout(() => {
