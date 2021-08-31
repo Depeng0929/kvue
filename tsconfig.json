@@ -18,6 +18,7 @@
     ],
     "paths": {
       "@depeng9527/visible": ["packages/visible/src/index.ts"],
+      "@depeng9527/klib": ["packages/klib/src/index.ts"],
     }
   },
   "include": [

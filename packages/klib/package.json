@@ -1,0 +1,39 @@
+{
+  "name": "@depeng9527/klib",
+  "version": "1.1.0",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "description": "Personal library",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Depeng0929/kvue"
+  },
+  "author": "Depeng0929 <kongdepeng520@gmail.com>",
+  "files": [
+    "dist",
+    "index.d.ts"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prepublishOnly": "npm run build",
+    "build": "rimraf dist && tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --watch --format cjs,esm --dts "
+  },
+  "bugs": "https://github.com/Depeng0929/kvue/issues",
+  "dependencies": {
+    "ramda": "^0.27.1"
+  },
+  "devDependencies": {
+    "@types/ramda": "^0.27.44"
+  }
+}
